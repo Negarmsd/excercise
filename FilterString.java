@@ -22,7 +22,7 @@
 					int j= counter *3;
 					char []word =new char [j];
 					if(astart[0]=='a'){
-				
+		
 						for (int i=0;i<=counter*3;i++){
 							word[i]=astart[i];
 							System.out.print(word[i]);
