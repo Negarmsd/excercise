@@ -1,7 +1,7 @@
-import java.util.Arrays; 
+//import java.util.iArrays; 
 class CeasarCipher{
 	 public static void main (String[] args ){
-		 String theSentence = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
+		 String theSentence = "wuba LUBA Dub DUb";
 		 CeasarSentence(theSentence);
 
 	 }
@@ -26,11 +26,15 @@ class CeasarCipher{
 		 //char [] word =new char [lengthOfWords];
 		
 		 for (int i=0;i<lengthofwords;i++){
-		
-			 CeasarCode[i]=words[i]+5;
+			 if(words[i]=='z' | words[i]=='Z' | words [i]=='Y' | words[i] =='y' |  words[i]=='x'| words [i]=='X' | words[i]=='w'| words[i]=='W' | words[i]=='v'| words[i]=='V'){
+				 CeasarCode[i]=words[i]-20;
+			 }else 
+				 CeasarCode[i]=words[i]+5;
 			 //System.out.printf("%d",CeasarCode[i]);
-			 words[i]=(char)CeasarCode[i];
-			 System.out.print(words[i]);
+			 ceasarwords[i]=(char)CeasarCode[i];
+			 if(ceasarwords[i]=='%'){
+				 ceasarwords[i]=' ';}
+			 System.out.print(ceasarwords[i]);
 
 		 }
 
