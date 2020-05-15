@@ -33,8 +33,7 @@ class BinaryTree
 			System.out.printf("\n left : %d" , root.value);
 			
 		}
-
-
+		
 	}
 
 	public void displayRight(Node root){
@@ -42,6 +41,17 @@ class BinaryTree
 		if(root!= null){
 			displayRight(root.right);
 			System.out.printf("\n right : %d" ,root.value);
+			
+		}
+		
+
+
+	}
+	public void display(Node root){
+		if(root!=null){
+			display(root.right);
+			System.out.printf("%d \n" ,root.value);
+			display(root.left);
 		}
 	}
 
@@ -55,11 +65,14 @@ class BinaryTree
 		Node newNode = new Node(value);
 		if(root==null){
 			root = newNode;
+			return root;
 		}
 
 
 		if(root!=null){
+			
 			Node current=root;
+
 
 			if(current.value>value){
 				if(current.left != null){
@@ -68,6 +81,7 @@ class BinaryTree
 					current.left = addValue(current.left, value);
 					return current;
 				}else current.left=newNode;
+				return current;
 				
 			
 			
@@ -81,18 +95,28 @@ class BinaryTree
 						current.right= addValue(current.right, value);
 						return current;
 				}else current.right= newNode;
+				return current;
 			}
-
-			
-
-
-
-			return current;
-				
 		}
-			
-			return newNode;		
+		return null;
 	}
+	
+
+	public static void strict(Node root){
+		boolean a =false;
+		if(root!=null){
+			if(root.right!=null && root.left!=null){
+				System.out.println(" true");
+				
+			}else 
+				System.out.println(" false");
+
+		}
+			//strict(root.left);
+			strict(root.right);
+			
+	}
+			
 
 
 
@@ -118,11 +142,16 @@ class BinaryTree
 		roo.insert(12);
 		roo.insert(14);
 		roo.insert(1);
-		roo.insert(55);
+		roo.insert(25);
+		roo.insert(9);
+		roo.insert(22);
 		
 
-		roo.displayRight(root);
-		roo.displayLeft(root);
+		//roo.displayRight(root);
+		//roo.displayLeft(root);
+		roo.display(root);
+		strict(root);
+
 	
 
 
