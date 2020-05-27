@@ -16,7 +16,16 @@ class basicII{
                 int columnsSize = numbers[0].length;
 		rowsColumnsChanger(numbers);*/
 		//plusOne();
-		shuffle();
+		//shuffle();
+		int i = 0 ;
+		int j = 1;
+		for (int x = 0 ; x<10 ;x++){
+			
+			if(x==j){
+				i=1100;
+			}
+		}
+		System.out.print(i);
 
 
 
