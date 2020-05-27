@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.*;
 import java.lang.Object;
+import java.util.Random;
 class shuffleCards{
 	public static void main (String[] args){
 		String [] cards = {"1K","2K","3K","4K","5K","6K","7K","8K","9K","10K","SoldierK","QueenK","KingK",
@@ -17,25 +18,133 @@ class shuffleCards{
 		String[] playerII = returnPlayerII(shuffledCards);
 		String[] playerIIPlayCards = playerIIPlayCards(playerII);
 		int a = cardsInOrder.length;
-
 		printCards(showCards , hiddenCards);
-		System.out.println("\nplay");
-                //Scanner throwCard = new Scanner(System.in);
-                //String played = throwCard.next();
 
-		//removeCard ( showCards, played );
-		//replaceCard( showCards ,  player , hiddenCards );
-		index( cardsInOrder , playerIIPlayCards, inTable[0] , inTable[5]);
-		System.out.println(Arrays.toString(playerIIPlayCards));
+//		while(true){
+			tableCards(inTable);
+			System.out.println("\nplay");
+                	Scanner throwCard = new Scanner(System.in);
+        	        String played = throwCard.next();
+			if( check (showCards , cardsInOrder, played, inTable[0], inTable[5],inTable)){
+				
+				removeCard ( showCards, played );
+				replaceCard( showCards ,  player , hiddenCards );
+			}
+			index( cardsInOrder , playerIIPlayCards, inTable[0] , inTable[5], playerII, inTable , played);
+			//System.out.println(Arrays.toString(playerIIPlayCards));
+//			if(isEnd(playerII))
+///				break;
+//			if(isEnd(player))
+//				break;
+//		}
+
+
 		//printCards( showCards ,  hiddenCards);
 		//System.out.println(a);
-		
-
-	
-		
-
 	
 	}
+	public static boolean isI(boolean isTableI){
+		return true;
+	}
+	 public static boolean isII(boolean isTableII){
+                return true;
+        }
+
+	public static void replaceInTable( String[] inTable, String played , boolean isI, boolean isII){
+		if(isI){
+			inTable[0] = played;
+		}
+		if(isII)
+			inTable[5] = played;
+		if(played == "pass"){
+			for(int i = 1; i<inTable.length ; i++){
+				inTable[i-1] = inTable[i];
+				inTable[i]=null;
+			}
+		}
+		tableCards(inTable);
+	}
+
+		
+		
+
+	public static boolean check (String[] showCards ,String[][] cardsInOrder, String played, String inTableI, String inTableII, String[] inTable){
+		 String[] hold = new String[4];
+                int indexInTableI = -1;
+                int indexInTableII = -1;
+		int indexPlayed =-1;
+                for(int i =0 ; i<13; i++){
+                        for(int j=0 ; j<4 ; j++){
+                                hold[j] = cardsInOrder[i][j];
+                        }
+                        indexInTableI = Arrays.asList(hold).indexOf(inTableI);
+                        if(indexInTableI !=-1)
+                                indexInTableI=i;
+                        indexInTableII = Arrays.asList(hold).indexOf(inTableII);
+                        if(indexInTableII !=-1)
+                                indexInTableII =i;
+		}
+		for(int i =0 ; i<13; i++){
+                        for(int j=0 ; j<4 ; j++){
+                                hold[j] = cardsInOrder[i][j];
+                        }
+                        indexInTableI = Arrays.asList(hold).indexOf(played);
+                        if(indexInTableI !=-1) indexPlayed=i;
+		}
+		if (indexPlayed > indexInTableI)
+			replaceInTable(inTable, played, true,false);
+		if(indexPlayed > indexInTableII)
+			 replaceInTable(inTable, played,false, false);
+
+		if(indexPlayed > indexInTableI || indexPlayed > indexInTableII){
+			return true;
+		}else 
+			return false;
+	}
+
+
+	public static boolean isEnd(String[] player){
+		boolean isEnd =false;
+		for (int i=0; i<player.length ; i++){
+			if(player[i] != null){ 
+				isEnd=false;
+				break;
+			}
+			else {
+				isEnd=true;
+			}
+		}
+		return isEnd;
+	}
+
+	//finding a random card to replace the card that we allready played with.
+
+	 public static void replaceCardPlayerII( String[] playerIIPlayCards, String[] playerII){
+		int indexRemovedCard = Arrays.asList(playerIIPlayCards).indexOf(null);
+		if(indexRemovedCard != -1){
+			int random =checkRandom();
+                	playerIIPlayCards[indexRemovedCard] = playerII[random];
+			playerII[random]=null;
+			System.out.println(Arrays.toString(playerIIPlayCards)+"<{   " + random);
+		}
+        }
+	public static int checkRandom(){
+		int random = (int)(Math.random() * 17);
+		int[] count = {4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+		Collections.shuffle(Arrays.asList(count));
+		int num =0;
+		if(count[random] != 0)
+		{
+			num = count[random];
+			count[random]= 0;
+		}
+		else checkRandom();
+		return num;
+	}
+
+
+
+
 
  
 
@@ -75,8 +184,8 @@ class shuffleCards{
 
 
 
-//finding and replacing the bigger or lower card in table in playerII's cards
-	public static void findBiggerLower(String[] playerIIPlayCards ,String[][] cardsInOrder , int indexInTableI , int indexInTableII){
+//finding and replacing the bigger or lower card in table in playerII's cards missing conditions a>card and b<card you shuld fix it later.
+	public static void findBiggerLower(String[] playerIIPlayCards ,String[][] cardsInOrder , int indexInTableI , int indexInTableII, String[] playerII){
 		int indexBiggerI = -1;
 		int indexBiggerII=-1;
 		int indexLowerI =-1;
@@ -258,6 +367,8 @@ class shuffleCards{
 
                 }
 
+		replaceCardPlayerII(playerIIPlayCards, playerII);
+
 
 
                         //findBiggerCard( playerIIPlayCards , cardsInOrder , indexInTableI+1 , indexInTableII+1);
@@ -273,7 +384,7 @@ class shuffleCards{
 
 
 //finding the index of the cards in the Table in cardsInOrder
-	public static void index( String[][] cardsInOrder , String[] playerIIPlayCards, String inTableI , String inTableII){
+	public static void index( String[][] cardsInOrder , String[] playerIIPlayCards, String inTableI , String inTableII, String[] playerII,String[] inTable , String played){
 		String[] hold = new String[4];
 		int indexInTableI = -1;
                 int indexInTableII = -1;
@@ -282,13 +393,17 @@ class shuffleCards{
 				hold[j] = cardsInOrder[i][j];
 			}
 			indexInTableI = Arrays.asList(hold).indexOf(inTableI);
-			if(indexInTableI !=-1)
+			if(indexInTableI !=-1){
 				indexInTableI=i;
+				replaceInTable(inTable, played ,true, false);
+			}
 			indexInTableII = Arrays.asList(hold).indexOf(inTableII);
-			if(indexInTableII !=-1)
+			if(indexInTableII !=-1){
 				indexInTableII =i;
+				replaceInTable(inTable, played  ,false, true);
+			}
 
-			findBiggerLower(playerIIPlayCards , cardsInOrder , indexInTableI , indexInTableII);
+			findBiggerLower(playerIIPlayCards , cardsInOrder , indexInTableI , indexInTableII, playerII );
 			
 				//System.out.println(i);
 	//			System.out.println(indexInTableI);
@@ -451,7 +566,7 @@ class shuffleCards{
                         inTable[j] = shuffledCards[j+42];
                 
 		}
-		tableCards(inTable);
+		
 		return inTable;
 	}
 
