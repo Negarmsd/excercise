@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.*;
 import java.lang.Object;
 import java.util.Random;
+import java.awt.Point;
 class shuffleCards{
 	public static void main (String[] args){
 		String [] cards = {"AK","2K","3K","4K","5K","6K","7K","8K","9K","10K","SoldierK","QueenK","KingK",
@@ -15,6 +16,9 @@ class shuffleCards{
 		String[] showCards = showPlayerCards(player);
 		int[] hiddenCards = hiddenCards();
 		String[] inTable =  returInTable(shuffledCards);
+		Point isPass = new Point();
+		isPass.x=0;
+		isPass.y=0;
 		List <String> table = new ArrayList<>();
                 table.add(inTable[0]);
                 table.add(inTable[1]);
@@ -38,14 +42,13 @@ class shuffleCards{
 			System.out.println("\nplay");
                 	Scanner throwCard = new Scanner(System.in);
         	        String played = throwCard.next();
-			if( check (showCards , cardsInOrder, played, inTable[0], inTable[5], inTable)){			
+			if( check (showCards , cardsInOrder, played, inTable[0], inTable[5], inTable, isPass, table)){			
 				removeCard ( showCards, played );
 				replaceCard( showCards ,  player , hiddenCards );
-				table.add(played);
 			}
 			System.out.println("\n playerII");
 
-			index( cardsInOrder , playerIIPlayCards, inTable[0] , inTable[5], playerII, inTable , played);
+			index( cardsInOrder , playerIIPlayCards, inTable[0] , inTable[5], playerII, inTable , played, isPass, table);
 			
 
 			//System.out.println(Arrays.toString(playerIIPlayCards));
@@ -54,56 +57,69 @@ class shuffleCards{
 			if(isEnd(player))
 				break;
 		}
+		
 
 		//printCards( showCards ,  hiddenCards);
 		//System.out.println(a);
 	
 	}
 
-	public static boolean isPass(boolean pass){
-			return pass;
+	public static void isIpass(boolean pass, Point isPass){
+		if(pass){
+			isPass.x=1;
+		}else isPass.x=0;
+	}
+	public static void isIIpass(boolean pass, Point isPass){
+                if(pass){
+                        isPass.y=1;
+                }else isPass.y=0;
+        }
+	public static boolean pass(Point isPass){
+		if(isPass.x == 1 && isPass.y == 1){
+			return true ;
+		}else return false;
 	}
 
+		
 
 	public static String[] shuffleTable(List<String> table){
 		Collections.shuffle(table);
-		String[] allTable = List.toArray(new String[table.size()]);
+		String[] allTable = new String [table.size()];
+		allTable = table.toArray(allTable);
 		return allTable;
 	}
 		
 
 	
 //this method replaces the cards in the table 
-	public static void replaceInTable( String[] inTable, String played , boolean isI, boolean isII){
+	public static void replaceInTable( String[] inTable, String played , boolean isI, boolean isII, Point isPass,List<String> table){
 		//System.out.println(isI + " " + isII);
-		int count =0 ;
-		
-		if(isI){
-			inTable[0] = played;
-		}else if(isII)
-			inTable[5] = played;
+		if(played != "pass"){
+
+			table.add(played);
+			if(isI){
+				inTable[0] = played;
+			}else if(isII)
+				inTable[5] = played;
+			 printInTable( inTable[0] , inTable[5]);
+		}
 		
 		if(inTable[0] == null && inTable[5] ==null){
-			for(int i = 1; i<inTable.length; i++){
-                                inTable[i-1] = inTable[i];
-                                inTable[i]=null;
-                        }
+			String[] allTable = shuffleTable(table);
+			inTable = Arrays.copyOf(allTable , allTable.length );
+			printInTable( inTable[0] , inTable[5]);
                 }
-
-		if(!istI && !isII){
-			for(int i = 1; i<inTable.length/2; i++){
+		if(played == "pass" && pass(isPass)){
+			for(int i = 1; i<inTable.length; i++){
 				inTable[i-1] = inTable[i];
-				inTable[i]=null;
 			}
+			printInTable( inTable[0] , inTable[5]);
 		}
-
-		printInTable( inTable[0] , inTable[5]);
-		
 	}		
 		
 // this method checks whether the played card is allowd.
-	public static boolean check (String[] showCards ,String[][] cardsInOrder, String played, String inTableI, String inTableII, String[] inTable){
-		 String[] hold = new String[4];
+	public static boolean check (String[] showCards ,String[][] cardsInOrder, String played, String inTableI, String inTableII, String[] inTable, Point isPass, List<String> table){
+		String[] hold = new String[4];
                 int indexInTableI = -1;
                 int indexInTableII = -1;
 		int indexPlayed =-1;
@@ -134,28 +150,30 @@ class shuffleCards{
 			}
 		 System.out.println("p"+indexPlayed);
 		if (indexPlay == (indexI+1)){
-			replaceInTable(inTable, played, true,false);
+			replaceInTable(inTable, played, true,false, isPass, table);
 		
 			check = true;
 			return check;
 		}
 		else if(indexPlay == (indexII + 1)){
-			 replaceInTable(inTable, played,false, true);
+			 replaceInTable(inTable, played,false, true, isPass, table);
 			 check = true;
 			 return check;
 		}
 		else if ((indexPlay == indexI - 1)){
-       		        replaceInTable(inTable, played, true,false);
+       		        replaceInTable(inTable, played, true,false, isPass, table);
 			check = true;
 			return check;
 		}
 		else if((indexPlay == indexII - 1)){
-			replaceInTable(inTable, played,false, true);
+			replaceInTable(inTable, played,false, true, isPass, table);
 			 check = true;
 			 return check;
 		}
 		if( played == "pass"){
-			replaceInTable(inTable, played,false, false) ;
+			isIpass(true,isPass);
+			replaceInTable(inTable, played,false, false, isPass, table);
+			
 			check = false;
 		} 
 
@@ -189,7 +207,7 @@ class shuffleCards{
 		}
         }
 	public static int checkRandom(){
-		int random = (int)(Math.random() * 18);
+		int random = (int)(Math.random() * 17);
 		int[] count = {4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
 		Collections.shuffle(Arrays.asList(count));
 		int num =0;
@@ -244,7 +262,7 @@ class shuffleCards{
 
 
 //finding and replacing the bigger or lower card in table in playerII's cards missing conditions a>card and b<card you shuld fix it later.
-	public static void findBiggerLower(String[] playerIIPlayCards ,String[][] cardsInOrder , int indexInTableI , int indexInTableII, String[] playerII, String[] inTable){
+	public static void findBiggerLower(String[] playerIIPlayCards ,String[][] cardsInOrder , int indexInTableI , int indexInTableII, String[] playerII, String[] inTable, Point isPass,List<String> table){
 		int indexBiggerI = -1;
 		int indexBiggerII=-1;
 		int indexLowerI =-1;
@@ -265,20 +283,21 @@ class shuffleCards{
 		if(indexBiggerI == -1 && indexBiggerII == -1 ){
 			indexLowerI = indexBiggerLower(playerIIPlayCards , cardsInOrder ,(indexInTableI-1));
 			indexLowerII = indexBiggerLower(playerIIPlayCards , cardsInOrder ,(indexInTableII-1));
+			System.out.println("I" +indexLowerII + "I" + indexLowerI );
 			if(indexLowerI != -1 || indexLowerII != -1){
 				if(indexLowerII != -1){
-					replaceInTable(inTable, playerIIPlayCards[indexLowerII] , false, true);
+					replaceInTable(inTable, playerIIPlayCards[indexLowerII] , false, true, isPass, table);
                                  	playerIIPlayCards[indexLowerII] = null;
                                         replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
 				if(indexLowerI != -1){
-					 replaceInTable(inTable, playerIIPlayCards[indexLowerI] , true, false);
+					 replaceInTable(inTable, playerIIPlayCards[indexLowerI] , true, false , isPass, table);
                                          playerIIPlayCards[indexLowerI]= null;
                                          replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
 			}
 
-			if(indexLowerI != -1 & indexLowerII != -1){
+			if(indexLowerI != -1 && indexLowerII != -1){
                         	boolean lowerI = twoIndexes ( playerIIPlayCards , cardsInOrder , indexInTableI-2);
                         	boolean lowerII = twoIndexes ( playerIIPlayCards , cardsInOrder , indexInTableII -2);
 				
@@ -292,34 +311,36 @@ class shuffleCards{
 
 					if(lowerI== true && lowI ==true){
 					
-						replaceInTable(inTable, playerIIPlayCards[indexLowerI] , true, false);
+						replaceInTable(inTable, playerIIPlayCards[indexLowerI] , true, false , isPass, table);
 						playerIIPlayCards[indexLowerI]= null;
 						replaceCardPlayerII( playerIIPlayCards, playerII);
 					}
 
 					else if(lowerII == true && lowII ==true){
-						replaceInTable(inTable, playerIIPlayCards[indexLowerII] , false, true);
+						replaceInTable(inTable, playerIIPlayCards[indexLowerII] , false, true , isPass, table);
 						playerIIPlayCards[indexLowerII] = null;
 						 replaceCardPlayerII( playerIIPlayCards, playerII);
 					}
 					else if (lowerI== true || lowI ==true){
-						replaceInTable(inTable, playerIIPlayCards[indexLowerI] , true, false);
+						replaceInTable(inTable, playerIIPlayCards[indexLowerI] , true, false , isPass, table);
                                         	playerIIPlayCards[indexLowerI]= null;
 						replaceCardPlayerII( playerIIPlayCards, playerII);
 					}
 					else if (lowerII == true || lowII ==true){
-						replaceInTable(inTable, playerIIPlayCards[indexLowerII] , false, true);
+						replaceInTable(inTable, playerIIPlayCards[indexLowerII] , false, true , isPass, table);
 						playerIIPlayCards[indexLowerII] = null;
 						replaceCardPlayerII( playerIIPlayCards, playerII);
 					}
 				} else {
-					replaceInTable(inTable, playerIIPlayCards[indexLowerI] , true, false);
+					replaceInTable(inTable, playerIIPlayCards[indexLowerI] , true, false , isPass, table);
 					playerIIPlayCards[indexLowerI]=null;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
 			}
+
 			if(indexLowerI == -1 && indexLowerII == -1){
-				replaceInTable(inTable, "pass" ,false, false);
+				isIIpass(true, isPass);
+				replaceInTable(inTable, "pass" ,false, false , isPass, table);
 			}
 
 			
@@ -327,11 +348,11 @@ class shuffleCards{
 
 		if(indexBiggerI != -1 || indexBiggerII != -1){
 			if(indexBiggerI != -1 ){
-				replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false);
+				replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false, isPass, table);
                                 playerIIPlayCards[indexBiggerI] = null ;
                                 replaceCardPlayerII( playerIIPlayCards, playerII);
 			}else if( indexBiggerII != -1){
-				 replaceInTable(inTable,  playerIIPlayCards[indexBiggerII], false , true);
+				 replaceInTable(inTable,  playerIIPlayCards[indexBiggerII], false , true, isPass, table);
                                  playerIIPlayCards[indexBiggerII] = null;
                                  replaceCardPlayerII( playerIIPlayCards, playerII);
 			}
@@ -348,40 +369,37 @@ class shuffleCards{
 			
 	
 				if(biggerI == true && bigI ==true){
-					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false);
+					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false, isPass, table);
 					playerIIPlayCards[indexBiggerI] = null ;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 
 				}	
 				else if(biggerII == true && bigII ==true ) {
-					replaceInTable(inTable,  playerIIPlayCards[indexBiggerII], false , true);
+					replaceInTable(inTable,  playerIIPlayCards[indexBiggerII], false , true, isPass, table);
 					playerIIPlayCards[indexBiggerII] = null;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 					
 				}
 				else if(biggerI == true || bigI ==true){
-					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false);
+					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false, isPass, table);
                                 	playerIIPlayCards[indexBiggerI] = null ;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
                                		
 	                        }
         	                else if(biggerII == true || bigII ==true ) {
-					replaceInTable(inTable,  playerIIPlayCards[indexBiggerII] ,false, true);
+					replaceInTable(inTable,  playerIIPlayCards[indexBiggerII] ,false, true, isPass, table);
                         	        playerIIPlayCards[indexBiggerII] = null;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
         	                        
                 	        }
 
 			}else{
-				replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false);
+				replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false, isPass, table);
 				playerIIPlayCards[indexBiggerI] = null;
 				 replaceCardPlayerII( playerIIPlayCards, playerII);
                                 	//System.out.println(indexBiggerI);
                       	}
 			
-			if(indexBiggerI == -1 & indexBiggerII == -1){
-                                replaceInTable(inTable, "pass" ,false, false);
-			}
 		}
 
 		if(indexBiggerI != -1 & indexLowerI != -1){
@@ -395,28 +413,28 @@ class shuffleCards{
 
 	
         	                if(biggerI == true &&  big == true){
-					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false);
+					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false, isPass, table);
                         	        playerIIPlayCards[indexBiggerI] = null ;
 					 replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
 				else if(lowerI == true && low == true){
-					replaceInTable(inTable,  playerIIPlayCards[indexLowerI]  , true, false);
+					replaceInTable(inTable,  playerIIPlayCards[indexLowerI]  , true, false, isPass, table);
 					playerIIPlayCards[indexLowerI] =null;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
                         	if (big == true || biggerI == true ){
-					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false);
+					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false, isPass, table);
 	                                playerIIPlayCards[indexBiggerI] = null ;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
                 	                
                         	}
 				if (lowerI == true || low ==true ){
-					replaceInTable(inTable,  playerIIPlayCards[indexLowerI]  , true, false);
+					replaceInTable(inTable,  playerIIPlayCards[indexLowerI]  , true, false, isPass, table);
                         	        playerIIPlayCards[indexLowerI] = null ;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
 			}else {
-				 replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false);
+				 replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false, isPass, table);
                                  playerIIPlayCards[indexBiggerI] = null ;
                                 replaceCardPlayerII( playerIIPlayCards, playerII);
 			}
@@ -433,28 +451,28 @@ class shuffleCards{
                         
 
    	                     if(biggerI == true && big == true){
-					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false);
+					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false, isPass, table);
                 	                playerIIPlayCards[indexBiggerI] = null;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
         	                else if(lowerII == true && low == true){
-					replaceInTable(inTable,  playerIIPlayCards[indexLowerII], false, true);
+					replaceInTable(inTable,  playerIIPlayCards[indexLowerII], false, true, isPass, table);
                         	        playerIIPlayCards[indexLowerII] = null;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
         	                if (biggerI == true || big == true){
-					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false);
+					replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false, isPass, table);
                         	        playerIIPlayCards[indexBiggerI] = null ;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 				
 				}
 				if( lowerII == true || low == true){
-					replaceInTable(inTable,  playerIIPlayCards[indexLowerII], false, true);
+					replaceInTable(inTable,  playerIIPlayCards[indexLowerII], false, true, isPass, table);
                         	        playerIIPlayCards[indexLowerII] = null;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 	                        }
 			}else {
-				replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false);
+				replaceInTable(inTable,  playerIIPlayCards[indexBiggerI]  , true, false, isPass, table);
                                 playerIIPlayCards[indexBiggerI] = null;
                               	replaceCardPlayerII( playerIIPlayCards, playerII);
 			}
@@ -470,25 +488,25 @@ class shuffleCards{
                                 boolean big = twoIndexes ( playerIIPlayCards , cardsInOrder , (indexInTableII ));
 				boolean low = twoIndexes ( playerIIPlayCards , cardsInOrder , (indexInTableII ));	
 	                        if(biggerII == true && big == true){	
-        	                        replaceInTable(inTable,  playerIIPlayCards[indexBiggerII]  , false,true);
+        	                        replaceInTable(inTable,  playerIIPlayCards[indexBiggerII]  , false,true, isPass, table);
                         	        playerIIPlayCards[indexBiggerII] = null;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 	                        }
         	                else if(lowerII == true && low == true ){
-                	                replaceInTable(inTable,  playerIIPlayCards[indexLowerII], false, true);
+                	                replaceInTable(inTable,  playerIIPlayCards[indexLowerII], false, true, isPass, table);
                         	        playerIIPlayCards[indexLowerII] = null;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 	                        }else if (low ==true || lowerII == true){
-					replaceInTable(inTable,  playerIIPlayCards[indexLowerII], false, true);
+					replaceInTable(inTable,  playerIIPlayCards[indexLowerII], false, true, isPass, table);
                         	        playerIIPlayCards[indexLowerII] = null;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 				}else if (big ==true || biggerII == true){
-                               		replaceInTable(inTable,  playerIIPlayCards[indexBiggerII], false, true);
+                               		replaceInTable(inTable,  playerIIPlayCards[indexBiggerII], false, true, isPass, table);
                 	                playerIIPlayCards[indexBiggerI] = null ;
                         	        replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
 			} else{
-				 replaceInTable(inTable,  playerIIPlayCards[indexBiggerII]  , false,true);
+				 replaceInTable(inTable,  playerIIPlayCards[indexBiggerII]  , false,true, isPass, table);
                                  playerIIPlayCards[indexBiggerII] = null;
                                  replaceCardPlayerII( playerIIPlayCards, playerII);
 			}
@@ -503,28 +521,28 @@ class shuffleCards{
                                 boolean big = twoIndexes ( playerIIPlayCards , cardsInOrder , (indexInTableII ));
                                 boolean low = twoIndexes ( playerIIPlayCards , cardsInOrder , (indexInTableI ));
 	                        if(biggerII == true &&  big == true){
-        	                       	replaceInTable(inTable,  playerIIPlayCards[indexBiggerII] ,false,  true);
+        	                       	replaceInTable(inTable,  playerIIPlayCards[indexBiggerII] ,false,  true, isPass, table);
                 	                playerIIPlayCards[indexBiggerII] = null ;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
 				else if(lowerI == true && low == true){
-					replaceInTable(inTable,  playerIIPlayCards[indexLowerI]  , true, false);
+					replaceInTable(inTable,  playerIIPlayCards[indexLowerI]  , true, false, isPass, table);
 					playerIIPlayCards[indexLowerI] =null;
                                 	replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
         	                if (biggerII == true || big == true  ){
-                	                replaceInTable(inTable,  playerIIPlayCards[indexBiggerII] ,false , true);
+                	                replaceInTable(inTable,  playerIIPlayCards[indexBiggerII] ,false , true, isPass, table);
 					playerIIPlayCards[indexBiggerII] = null ;
                                 	replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
 	                        if (low == true || lowerI == true ){
-					replaceInTable(inTable,  playerIIPlayCards[indexLowerII], true, false);
+					replaceInTable(inTable,  playerIIPlayCards[indexLowerII], true, false, isPass, table);
                 	                playerIIPlayCards[indexLowerII] = null ;
 					replaceCardPlayerII( playerIIPlayCards, playerII);
 				}
 			}else {
 
-				replaceInTable(inTable,  playerIIPlayCards[indexBiggerII] ,false,  true);
+				replaceInTable(inTable,  playerIIPlayCards[indexBiggerII] ,false,  true, isPass, table);
                                 playerIIPlayCards[indexBiggerII] = null ;
 				replaceCardPlayerII( playerIIPlayCards, playerII);
 			}
@@ -532,8 +550,9 @@ class shuffleCards{
                 }
 
 
-		if((indexBiggerI == -1 & indexLowerII == -1) && (indexLowerI == -1 & indexLowerII == -1)){
-			replaceInTable(inTable, "pass" ,false, false);
+		if((indexBiggerI == -1 && indexLowerII == -1) && (indexLowerI == -1 && indexLowerII == -1)){
+			isIIpass(true, isPass);
+			replaceInTable(inTable, "pass" ,false, false, isPass, table);
 		}
 	
 		
@@ -545,7 +564,7 @@ class shuffleCards{
 
 
 //finding the index of the cards in the Table in cardsInOrder
-	public static void index( String[][] cardsInOrder , String[] playerIIPlayCards, String inTableI , String inTableII, String[] playerII,String[] inTable , String played){
+	public static void index( String[][] cardsInOrder , String[] playerIIPlayCards, String inTableI , String inTableII, String[] playerII,String[] inTable , String played,Point isPass,List<String> table){
 		String[] hold = new String[4];
 		int indexInTableI = -1;
                 int indexInTableII = -1;
@@ -568,7 +587,7 @@ class shuffleCards{
 				//findBiggerLower(playerIIPlayCards , cardsInOrder , indexInTableI , indexInTableII, playerII ,inTable );
 			}
 		}	
-		findBiggerLower(playerIIPlayCards , cardsInOrder , indexI , indexII, playerII ,inTable );
+		findBiggerLower(playerIIPlayCards , cardsInOrder , indexI , indexII, playerII ,inTable, isPass, table );
 	}
 		
 
