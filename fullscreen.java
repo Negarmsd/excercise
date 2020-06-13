@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+/**this class is a very basic GUI exercise.we get the name of the Game player print the name and goes to a new window and say hi to player.
+ */
 class fullscreen{
 	public static void main(String[] args) {
 	 screen test = new screen();
@@ -14,14 +16,14 @@ class screen implements ActionListener {
         private static JPanel panel;
         private static JTextField name;
         private static JButton b1 ;
-        private JFrame game;
-        private JPanel p;
-        private JTextField column;
-        private JLabel field;
+	private JFrame game;
+	private JPanel p;
+        private JLabel message;
+    
         public screen() {
 
                 fenster = new JFrame();
-                fenster.setTitle("funf gewinnt");
+                fenster.setTitle("Game");
                 fenster.setSize(400,350);
                 fenster.setLocation(100,100);
                 fenster.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,28 +58,19 @@ class screen implements ActionListener {
 
 
                 game = new JFrame();
+		game.setTitle("2th");
                 game.setSize(400,350);
                 game.setLocation(100,100);
                 game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-                game = new JFrame();
-                game.setSize(400,350);
-                game.setLocation(100,100);
-                game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 
                 p = new JPanel();
                 p.setLayout(null);
                 p.setBackground(Color.BLACK);
 
-
-                column = new JTextField();
-                column.setBounds(10,10,100,20);
-                p.add(column);
-
-                field =  new JLabel("hey");
-                field.setForeground(Color.PINK);
-                p.add(field);
+		message =  new JLabel("hey");
+		message.setBounds(10,10,100,20);
+                message.setForeground(Color.PINK);
+                p.add(message);
                 game.add(p);
                 //game.setVisible(true);
 
