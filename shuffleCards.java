@@ -721,15 +721,39 @@ class shuffleCards{
 
 
 	public static void replaceCard( String[] showCards , String[] player , int[] hiddenCards ){
-		Scanner input = new Scanner(System.in);
-		System.out.println("newCard");
-		int indexNewCard = input.nextInt();
-		int indexRemovedCard = Arrays.asList(showCards).indexOf(null);
-		showCards[indexRemovedCard] = player[indexNewCard-1];
-		hiddenCards[indexNewCard-5] = 0;
-		printCards(showCards , hiddenCards);
-		
+		if(!checkHiddenCrds(hiddenCards)){
+			Scanner input = new Scanner(System.in);
+			System.out.println("newCard");
+			int indexNewCard = input.nextInt();
+			if(indexNewCard < 5 || indexNewCard > 21) replaceCard(showCards, player, hiddenCards);
+			if(hiddenCards[indexNewCard-5] == 0){
+				System.out.println("you already played with this card");
+				replaceCard(showCards, player, hiddenCards );
+			}else{
+				int indexRemovedCard = Arrays.asList(showCards).indexOf(null);
+				showCards[indexRemovedCard] = player[indexNewCard-1];
+				hiddenCards[indexNewCard-5] = 0;
+				player[indexNewCard-1] = null;
+				System.out.println(Arrays.toString(player));
+				printCards(showCards , hiddenCards);
+			}
+		}
+	
 	}
+	// check if the hiddenCards are all played
+	public static boolean checkHiddenCrds(int[] hiddenCards) {
+		boolean allPlayed = false;
+		int count = 0;
+		for(int i = 0; i < hiddenCards.length; i++) {
+			if(hiddenCards[i] == 0) count++;
+		}
+		if (count == 17)
+			allPlayed =true;
+		else allPlayed = false;
+		return allPlayed;
+	}
+
+
 
 	public static void printCards(String[] showCards , int[] hiddenCards){
 		for (int i=0 ; i<4 ; i++){

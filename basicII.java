@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.List;
 import java.util.*;
 
 class basicII{
@@ -17,27 +18,54 @@ class basicII{
 		rowsColumnsChanger(numbers);*/
 		//plusOne();
 		//shuffle();
-		int i = 0 ;
-		int j = 1;
-		for (int x = 0 ; x<10 ;x++){
-			
-			if(x==j){
-				i=1100;
-			}
-		}
-		System.out.print(i);
-
-
-
-
-
-
-
-
-
+		twoStrings();	
+		
 
 	}
+	//test if the second string contains the first one.
+	public static void twoStrings() {
+		String i = "hello word";
+		String ii ="hello";
+		char[] c =i.toCharArray();
+		char[] cc = ii.toCharArray();
+		List<Integer> ccwl = new ArrayList<Integer>();//cc length od words
+		List<Integer> cwl = new ArrayList<Integer>();//c length od words
+		int count = 0;
+		//i wanted to get the length of each word but there is no need for it. i didn't use it.
+		for (int x = 0; x < c.length; x++ ) {
+			if(c[x] != ' ' ){
+				count++;	
+			}
+			if(c[x] == ' ' || x == c.length -1 ){ 
+				cwl.add(count);
+				count = 0;
+			}
+		}
+		int o =0;
+		for (int x = 0; x < cc.length; x++ ) {
+                        if(cc[x] != ' ' ){ 
+				o++;
+                        }
+                        if(cc[x] == ' ' || x == cc.length - 1 ) {
+				ccwl.add(o);
+				o = 0;
+			}
+        	}
 
+		String[] wordI = i.split(" ");
+		String[] wordII = ii.split(" ");
+		for(int x =0; x< wordI.length; x++ ) {
+			for(int j = 0; j < wordII.length; j++ ){
+				if(wordI[x].equals(wordII[j])){
+					System.out.println(wordII[j]);
+				}
+					
+
+			}
+		}
+	}
+
+	//making an Array from numbers between 0-53 and shuffle them.
 	public static void shuffle (){
 		Integer [] num = new Integer[54];
 		for (int i = 0 ; i<54 ; i++){

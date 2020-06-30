@@ -2,22 +2,64 @@ import java.awt.Point;
 import java.util.*;
 import java.io.*;
 import java.lang.*;
+import java.util.Random;
 class bug {
 	public static void main (String[] args){
+		    Random r = new Random();
+		    for(int x = 0 ; x < 50; x++) {
+			    System.out.print(r.nextInt((8 - 1) + 1) + 1 + "  " );
+		    }
+		    test te =  new test();
+		    te.a = 10000;
+		    System.out.println(" class tets " + te.a);
+		    System.out.println("in class" + te.ptest());
+
 		Point a = new Point();
 		a.x=0;
 		a.y=0;
 		a(a);
 		b(a);
-		int x = 1 ;
+		int[] x = new int[100] ;
+		x[0] = 2;
 		c(x);
-		//System.out.print(c(x));
-		System.out.println(x);
+		List<Integer> no = new ArrayList<Integer>() ;
+		no.add(333);
+		no.add(33);
+		System.out.print("remove " + no.get(0) );
+		no.clear();
+		System.out.println("no " + no.size()+ " " );
+		///System.out.print());
+		while(x[0] != -1) {
+		//x[(x[0] & 2)] = 1111111;
+			System.out.println(x[0] + " " + (x[0] & 7));
+
+			
+				x[0]--;
+		}
+		System.out.println(8 % 10 + " %%%");
 		
 		number test = new number("a","b");
-		
+		Random random = new Random();
+		while(true) {
+			int aa = random.nextInt(100);
+			if(aa == 99) {
+				System.out.println(aa);
+				break;
+			}
+		}
+		List<Integer> zer = new ArrayList<Integer>();
+		zer.add(10000);
+		zer.add(4040404);
+		for (int i = 0 ; i < zer.size() ;i ++ ){
+			System.out.println(" ** " + zer.get(i));
+		}
+		zer  = zer(zer);
+		for (int i = 0 ; i < zer.size(); i ++ ){
+                        System.out.print("  " + zer.get(i));
+                }
+			
 		//new name();
-		Integer yes = new Integer(999);
+		//Integer yes = new Integer(999);
 		//System.out.println(yes.intValue());
 		
 		String[] objects = {"b51","A" };
@@ -40,10 +82,18 @@ class bug {
 			return true;
 		else return false;
 	}
-	public static int c(int x){
-		x = 10;
-		System.out.println("in void" + x);
-		return x;
+	public static List<Integer> zer(List<Integer> zer) {
+		/*for(int i = 0; i < 10 ;i++) {
+			zer.add(i);
+		}*/
+		zer.remove(1);
+		return zer;
+	}
+	public static void c(int[] x){
+		x[0] = 23;
+		System.out.println("in void" + x[0]);
+
+		//return x;
 
 	}
 }
@@ -64,6 +114,16 @@ class name implements Comparator<number>{
 	public int compare( number numx,number numy){
 		int c = ( numx.x.compareTo(numy.y));
 		return c;
+	}
+}
+class test { 
+	int a;
+	public test () {
+		ptest();
+	}
+	public  int ptest() {
+		System.out.print("class tetst " + a);
+		return a;
 	}
 }
 
