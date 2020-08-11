@@ -5,14 +5,26 @@ import java.lang.*;
 import java.util.Random;
 class bug {
 	public static void main (String[] args){
-		    Random r = new Random();
+		List<Character> dude = new ArrayList<Character> ();
+		dude.add('h');
+		dude.add('e');
+		dude.add('y');
+		char struggle = " "; 
+		String bruh = "theStruggle";
+		char babe = 'D';
+		bruh += babe;
+		System.out.println("bruh" + bruh);
+		Random r = new Random();
 		    for(int x = 0 ; x < 50; x++) {
 			    System.out.print(r.nextInt((8 - 1) + 1) + 1 + "  " );
 		    }
+		    char s = 'B';
+		    System.out.println("*************" +Character.toLowerCase(s) + " " + s);
+		    
 		    test te =  new test();
 		    te.a = 10000;
 		    System.out.println(" class tets " + te.a);
-		    System.out.println("in class" + te.ptest());
+		    System.out.println( 5 << 3) ;
 
 		Point a = new Point();
 		a.x=0;
